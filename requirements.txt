@@ -1,7 +1,6 @@
 pandas
-numpy
-plotly_express
-warnings
-gunicorn
 dash
+plotly_express
 dash_bootstrap_components
+numpy
+gunicorn
