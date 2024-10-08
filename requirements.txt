@@ -1,0 +1,7 @@
+pandas
+numpy
+plotly_express
+warnings
+gunicorn
+dash
+dash_bootstrap_components
