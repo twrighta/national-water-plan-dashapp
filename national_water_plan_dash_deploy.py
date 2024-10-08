@@ -6,10 +6,10 @@ from dash import Dash, html, dcc
 from dash.dependencies import Input, Output, State
 import plotly_express as px
 import dash_bootstrap_components as dbc
-import warnings
+# import warnings
 import gunicorn
 
-warnings.simplefilter("ignore")
+# warnings.simplefilter("ignore")
 
 github_path = 'https://raw.githubusercontent.com/twrighta/national-water-plan-dashapp/main/national_water_plan.csv'
 
