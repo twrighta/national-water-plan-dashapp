@@ -669,11 +669,12 @@ def hp_spills_flag_bar(flags):
                                               np.sum(summed_df["Spill Events 2021"]),
                                               np.sum(summed_df["Spill Events 2022"])]})
     if 0 < num_flags < 4:
+        by_string = title_flags.strip("[\'").strip("\']").strip()
         bar_fig = px.histogram(year_summed_df,
                                x="Year",
                                y="Events",
                                barmode="group",
-                               title=f"<b>Sewage Spill Events by: {title_flags.strip("[\'").strip("\']")}<b>",
+                               title=f"<b>Sewage Spill Events by: {by_string}<b>",
                                nbins=3,
                                template="seaborn")
         bar_fig.update_layout(margin=dict(l=10, r=10, t=30, b=10),
