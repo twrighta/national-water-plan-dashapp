@@ -673,8 +673,7 @@ def hp_spills_flag_bar(flags):
                                x="Year",
                                y="Events",
                                barmode="group",
-                               title=f"<b>Sewage Spill Events by: {title_flags.strip("\'").strip("[\'").strip("\']")} \
-                               <b>",
+                               title=f"<b>Sewage Spill Events by: {title_flags.strip("[\'").strip("\']")}<b>",
                                nbins=3,
                                template="seaborn")
         bar_fig.update_layout(margin=dict(l=10, r=10, t=30, b=10),
