@@ -2,14 +2,12 @@
 
 import pandas as pd
 import numpy as np
-from dash import Dash, html, dcc
+from dash import Dash, html, dcc, callback
 from dash.dependencies import Input, Output, State
 import plotly_express as px
 import dash_bootstrap_components as dbc
-# import warnings
 import gunicorn
 
-# warnings.simplefilter("ignore")
 
 github_path = 'https://raw.githubusercontent.com/twrighta/national-water-plan-dashapp/main/national_water_plan.csv'
 
@@ -453,7 +451,7 @@ futures_content = html.Div(children=[
 
 # CREATE CALLBACKS
 # Page navigation - navigate to the page by url. Error if another page is tried to be reached.
-@app.callback(Output("page-content", "children"),
+@callback(Output("page-content", "children"),
               [Input("url", "pathname")])
 def render_page_content(pathname):
     if pathname == "/home":
@@ -477,7 +475,7 @@ def render_page_content(pathname):
 
 # Homepage - Map of all sites points, coloured by water company and sized by spill count.
 # Filterable by whether they are bathing water/shellfish/ecoloical/marine protected/priority flag
-@app.callback(
+@callback(
     Output("hp-map", "figure"),
     Input("hp-year-radio", "value"))
 def update_hp_map(year):
@@ -524,7 +522,7 @@ def update_hp_map(year):
 
 
 # Pie chart of count of all releases by Receiving environment. Filterable by year the type flags.
-@app.callback(
+@callback(
     Output("hp-pie", "figure"),
     Input("hp-year-radio", "value"))
 def update_hp_pie(year):
@@ -552,7 +550,7 @@ def update_hp_pie(year):
 
 
 # Home page - Bar chart of counts of each type of improvements by receiving environment
-@app.callback(Output("home-improvements-bar", "figure"),
+@callback(Output("home-improvements-bar", "figure"),
               Input("hp-receiving-environment", "value"))
 def improvements_bar_count(receiving_environment):
     filtered_df = df[df["Receiving Environment"] == receiving_environment]
@@ -583,7 +581,7 @@ def improvements_bar_count(receiving_environment):
 
 
 # Barchart total spills per year by Basin district. Filterable by year.
-@app.callback(Output("hp-basin-bar", "figure"),
+@callback(Output("hp-basin-bar", "figure"),
               Input("hp-year-radio", "value"))
 def update_hp_basin_bar(year):
     if year == "All":
@@ -647,7 +645,7 @@ def update_hp_basin_bar(year):
 
 
 # 2020, 2021, 2022 Total Spills barchart. Filterable by each flag or all flags
-@app.callback(Output("total-spills_flagged-bar", "figure"),
+@callback(Output("total-spills_flagged-bar", "figure"),
               Input("flags-dropdown", "value"))
 def hp_spills_flag_bar(flags):
     num_flags = len(flags)
@@ -696,7 +694,7 @@ def hp_spills_flag_bar(flags):
 
 
 # Water companies - calculate and return water company metrics
-@app.callback(
+@callback(
     [Output("company-sites", "children"),
      Output("company-lads", "children"),
      Output("company-catchments", "children"),
@@ -719,7 +717,7 @@ def calculate_company_stats(company):
 
 # Water Companies - Map of all sites, sized by spill count. Coloured by whether less than or greater than average
 # or by improvement counts needed. Filterable by year, and down to water company
-@app.callback(
+@callback(
     Output("company-map-fig", "figure"),
     Input("company-year-radio", "value"),
     Input("wc-dropdown", "value")
@@ -768,7 +766,7 @@ def company_map(year, company):
 
 # - Water Companies - Line chart of all releases coloured by Receiving Environment, by year.
 # Compared to average for all water companies (dotted line)
-@app.callback(
+@callback(
     Output("wc-line-fig", "figure"),
     Input("wc-dropdown", "value"))
 def company_release_line(company):
@@ -805,7 +803,7 @@ def company_release_line(company):
 
 # Water companies - Line chart of projected spills 2025-2050 - vs average of other water companies
 # 2025 Projected Spills
-@app.callback(Output("wc-projected-spills", "figure"),
+@callback(Output("wc-projected-spills", "figure"),
               Input("wc-dropdown", "value"))
 def company_projected_line(input_company):
     filtered_df = df[df["Water company"] == input_company]
@@ -844,7 +842,7 @@ def company_projected_line(input_company):
 
 
 # Water companies - Pie chart of counts of each improvement required
-@app.callback(Output("wc-pie-fig", "figure"),
+@callback(Output("wc-pie-fig", "figure"),
               Input("wc-dropdown", "value"))
 def company_improvement_count_pie(company):
     filtered_df = df[df["Water company"] == company]
@@ -876,7 +874,7 @@ def company_improvement_count_pie(company):
 
 
 # River Basin Statistics for top of page
-@app.callback([Output("basin-sites-below-target", "children"),
+@callback([Output("basin-sites-below-target", "children"),
                Output("basin-num-sites", "children"),
                Output("basin-num-lads", "children"),
                Output("basin-num-water-bodies", "children"),
@@ -911,7 +909,7 @@ def calculate_river_basin_statistics(basin_district):
 
 
 # Map of all sites points. Coloured by Water Company, sized by total spills
-@app.callback(
+@callback(
     Output("basin-map-fig", "figure"),
     Input("basin-dropdown", "value"),
     Input("basin-year-radio", "value")
@@ -962,7 +960,7 @@ def river_basin_map(basin, year):
 
 # - River Basins - Barchart of top n local authorities by total average spill count in the river basin.
 # Option to filter by best or worst, and year.
-@app.callback(
+@callback(
     Output("basin-authority-bar-fig", "figure"),
     Input("basin-dropdown", "value"),
     Input("basin-authority-input", "value"),
@@ -1033,7 +1031,7 @@ def basin_authority_spills(basin, n_authorities, best_worst, year):
 
 # Basin - Projected spills by receiving environment - with average across all catchments as well
 # option to switch to sum of meeting YYYY requirements as a line chart too
-@app.callback(
+@callback(
     Output("projected-spills-line", "figure"),
     Input("basin-dropdown", "value")
 )
@@ -1126,7 +1124,7 @@ def projected_spill_line(basin):
 
 
 # River Basin - worst/best water bodies by spill count - selectable by year, and can check the issue flags
-@app.callback(
+@callback(
     Output("basin-water-bodies-bar", "figure"),
     Input("basin-dropdown", "value"),
     Input("basin-year-radio", "value"),
@@ -1208,7 +1206,7 @@ def basin_water_bodies(basin, year, flag, num_water_bodies):
 
 
 # Page 4: Futures
-@app.callback(
+@callback(
     Output("geography-member-dropdown", "options"),
     Input("geography-dropdown", "value")
 )
@@ -1220,7 +1218,7 @@ def update_geography_members(selected_geography):
 
 
 # Futures - Callback to populate geography dropdown
-@app.callback(
+@callback(
     Output("geography-dropdown", "options"),
     Input("geography-dropdown", "search_value")
 )
@@ -1229,7 +1227,7 @@ def update_geography_dropdown(search_value):
 
 
 # Futures - Stats by chosen geography for top of page
-@app.callback(
+@callback(
     [Output("futures-total-sites", "children"),
      Output("futures-pct-below-target", "children"),
      Output("futures-improvements-planned", "children"),
@@ -1286,7 +1284,7 @@ def futures_stats(geography_member, selected_geography):
 
 
 # Futures - map of all points in the chosen geography. Coloured by improvement count, filterable by year
-@app.callback(Output("futures-map", "figure"),
+@callback(Output("futures-map", "figure"),
               State("geography-dropdown", "value"),
               Input("geography-member-dropdown", "value"),
               Input("futures-year-radio", "value")
@@ -1352,7 +1350,7 @@ def futures_map(geography, geography_member, year):
 
 
 # Futures - Line graph of sum of projected spills each 5 year - Can do whole geography or an individual unit within
-@app.callback(Output("futures-projected-line-fig", "figure"),
+@callback(Output("futures-projected-line-fig", "figure"),
               Input("geography-dropdown", "value"),
               Input("geography-member-dropdown", "value"))
 def futures_projected_line(geography, geography_member):
@@ -1401,7 +1399,7 @@ def futures_projected_line(geography, geography_member):
 
 
 # - Futures - Line graph of count of sites meeting requirements each 5 year
-@app.callback(Output("futures-meeting-req-line", "figure"),
+@callback(Output("futures-meeting-req-line", "figure"),
               Input("geography-dropdown", "value"),
               Input("geography-member-dropdown", "value"))
 def futures_meeting_requirements(geography, geography_member):
@@ -1451,7 +1449,7 @@ def futures_meeting_requirements(geography, geography_member):
 
 
 # Futures - Boxplot of Predicted Annual Spill Frequency Post Scheme
-@app.callback(Output("futures-box-fig", "figure"),
+@callback(Output("futures-box-fig", "figure"),
               Input("geography-dropdown", "value"),
               Input("geography-member-dropdown", "value"),
               Input("futures-proj-year-radio", "value"))
